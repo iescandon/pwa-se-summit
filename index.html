@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Hello World">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#67ebj5">
+
+    <title>Hello World</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="/logo.png">
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <h2 id="motion">motion</h2>
+    <h2 id="location">location</h2>
+    <video id="video" playsinline autoplay muted width="500px" height="'500px"></video>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
+
+        //Camera
+        if (navigator.mediaDevices.getUserMedia){
+            const constraints = {
+                audio: false,
+                video: {
+                    facingMode: 'user'
+                }
+            };
+            const video = document.getElementById("video");
+            navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+                video.srcObject = stream;
+            });
+        }
+
+            //Device Orientation
+            if (window.DeviceMotionEvent){
+                window.addEventListener('deviceorientation', event => {
+                    const motion = document.getElementById('motion');
+                    motion.innerText = `${event.alpha}, ${event.beta}, ${event.gamma}`;
+                });
+            }
+
+            //Geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(event => {
+                    const location = document.getElementById('location');
+                    location.innerText = `${event.coords.latitude}, ${event.coords.longitude}`;
+                });
+            }
+
+    </script>
+</body>
+</html>
